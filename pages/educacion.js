@@ -5,58 +5,58 @@ import axios from 'axios';
 
 const _api = 'http://127.0.0.1:3001';
 
-const Eventos = () => {
+const Educacion = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenEditableModal, setIsOpenEditableModal] = useState(false);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-    const [eventos, setEventos] = useState([]);
+    const [educacion, setEducacion] = useState([]);
 
-    // metodo fetch para obtener los eventos con axios
-    const [eventoModal, setEventoModal] = useState({
+    // metodo fetch para obtener los post de educacion con axios
+    const [educacionModal, setEducacionModal] = useState({
         id: 0,
         id_admin: 0,
         titulo: '',
         descripcion: '',
-        fecha: ''
+        imagen: ''
     });
 
-    const fetchEventos = async () => {
+    const fetchEducacion = async () => {
         try {
-            const response = await axios.get(`${_api}/api/evento/getAll`);
+            const response = await axios.get(`${_api}/api/educacion/getAll`);
             console.log(response.data);
-            setEventos(response.data);
+            setEducacion(response.data);
         } catch (error) {
             console.error(error);
         }
     }
 
-    //useEffect para obtener los eventos al cargar la pagina
+    //useEffect para obtener los posts al cargar la pagina
     useEffect(() => {
-        fetchEventos();
+        fetchEducacion();
     }, []);
 
     // useEffect para verificar cambios en la base de datos
     useEffect(() => {
-        fetchEventos();
+        fetchEducacion();
     }, [isOpen, isOpenEditableModal, isOpenDeleteModal]);
 
-    const handleEdit = async (evento) => {
+    const handleEdit = async (post) => {
         setIsOpenEditableModal(!isOpenEditableModal);
-        setEventoModal(evento);
+        setEducacionModal(post);
     };
 
     const handleFormEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`${_api}/api/evento/update`, {
-                id: eventoModal.id,
+            await axios.put(`${_api}/api/educacion/update`, {
+                id: educacionModal.id,
                 idAdministrador: 1,
                 titulo: e.target[0].value,
                 descripcion: e.target[1].value,
-                fecha: e.target[2].value
+                imagen: e.target[2].value
             }).then(response => {
                 console.log(response.data);
-                fetchEventos();
+                fetchEducacion();
                 setIsOpenEditableModal(false);
             });
         } catch (error) {
@@ -64,15 +64,14 @@ const Eventos = () => {
         }
     }
 
-    const handleDelete = (evento) => {
+    const handleDelete = (post) => {
         setIsOpenDeleteModal(!isOpenDeleteModal);
-        setEventoModal(evento);
+        setEducacionModal(post);
     };
 
-
     const handleInputChange = (event) => {
-        setEventoModal({
-            ...eventoModal,
+        setEducacionModal({
+            ...educacionModal,
             [event.target.name]: event.target.value
         });
       };
@@ -80,14 +79,14 @@ const Eventos = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${_api}/api/evento/create`, {
+            await axios.post(`${_api}/api/educacion/create`, {
                 idAdministrador: 1,
                 titulo: e.target[0].value,
                 descripcion: e.target[1].value,
-                fecha: e.target[2].value
+                imagen: e.target[2].value
             }).then(response => {
                 console.log(response.data);
-                fetchEventos();
+                fetchEducacion();
                 setIsOpen(false);
             });
         } catch (error) {
@@ -96,20 +95,20 @@ const Eventos = () => {
     }
 
     const cleanState = () => {
-        setEventoModal({
+        setEducacionModal({
             id: 0,
             id_admin: 0,
             titulo: '',
             descripcion: '',
-            fecha: ''
+            imagen: ''
         });
     }
     return (
         <>
             <EventsContainer>
                 <div className="events__header">
-                    <h2>Eventos</h2>
-                <button onClick={() => setIsOpen(!isOpen)}>Agregar nuevo evento</button>
+                    <h2>Educacion</h2>
+                <button onClick={() => setIsOpen(!isOpen)}>Agregar post educacion</button>
                 </div>
                 <table>
                     <thead>
@@ -118,21 +117,21 @@ const Eventos = () => {
                             <th>Administrador</th>
                             <th>Titulo</th>
                             <th>Descripcion</th>
-                            <th>Fecha</th>
+                            <th>Imagen</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {eventos.map(evento => (
-                            <tr key={evento.id}>
-                                <td>{evento.id}</td>
-                                <td>{evento.id_admin}</td>
-                                <td>{evento.titulo}</td>
-                                <td>{evento.descripcion}</td>
-                                <td>{evento.fecha}</td>
+                        {educacion.map(post => (
+                            <tr key={post.id}>
+                                <td>{post.id}</td>
+                                <td>{post.id_admin}</td>
+                                <td>{post.titulo}</td>
+                                <td>{post.descripcion}</td>
+                                <td>{post.imagen}</td>
                                 <td>
-                                    <button onClick={() => handleEdit(evento)}>Editar</button>
-                                    <button onClick={() => handleDelete(evento)}>Eliminar</button>
+                                    <button onClick={() => handleEdit(post)}>Editar</button>
+                                    <button onClick={() => handleDelete(post)}>Eliminar</button>
                                 </td>
                             </tr>
                         ))}
@@ -142,40 +141,28 @@ const Eventos = () => {
             </EventsContainer>
             <Modal isOpen={isOpen}>
                 <div className="header__modal">
-                    <h2>Agregar nuevo evento</h2>
+                    <h2>Agregar nuevo post educacion</h2>
                     <button onClick={() => setIsOpen(!isOpen)}>Cerrar</button>
                 </div>
                 <form onSubmit={handleFormSubmit}>
                     <div className="group__input">
                         <label>Nombre</label>
-                        <input type="text" placeholder="Nombre del evento" />
+                        <input type="text" placeholder="Nombre del post" />
                     </div>
                     <div className="group__input">
                         <label>Descripcion</label>
-                        <input type="text" placeholder="Descripcion del evento" />
+                        <input type="text" placeholder="Descripcion del post" />
                     </div>
-                    <div  className="group__input">
-                        <div className="subgroup__input">
-                            <p>Fecha</p>
-                            <input 
-                                type="date" 
-                                name="fecha"
-                            />
-                        </div>
-                      {/*   <div className="subgroup__input">
-                            <p>Hora</p>
-                            <input 
-                                type="time" 
-                                name="fecha"
-                            />
-                        </div> */}
+                    <div className="group__input">
+                        <label>Imagen URL</label>
+                        <input type="text" placeholder="Descripcion del post" />
                     </div>
                     <button type="submit">Agregar</button>
                 </form>
             </Modal>
             <Modal isOpen={isOpenEditableModal}>
                 <div className="header__modal">
-                    <h2>Editar evento</h2>
+                    <h2>Editar Post educacion</h2>
                     <button onClick={() => setIsOpenEditableModal(!isOpenEditableModal)}>Cerrar</button>
                 </div>
                 <form onSubmit={handleFormEditSubmit}>
@@ -183,8 +170,8 @@ const Eventos = () => {
                         <label>Nombre</label>
                         <input 
                             type="text"
-                            name="titulo" // Add the name attribute
-                            value={eventoModal.titulo}
+                            name="titulo"
+                            value={educacionModal.titulo}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -192,43 +179,33 @@ const Eventos = () => {
                         <label>Descripcion</label>
                         <input 
                             type="text" 
-                            name="descripcion" // Add the name attribute
-                            placeholder="Descripcion del evento" 
-                            value={eventoModal.descripcion} 
+                            name="descripcion" 
+                            placeholder="Descripcion del post" 
+                            value={educacionModal.descripcion} 
                             onChange={handleInputChange}/>
                     </div>
                     <div  className="group__input">
-                        <div className="subgroup__input">
-                            <p>Fecha</p>
-                            <input 
-                                type="date" 
-                                name="fecha" // Add the name attribute
-                                value={eventoModal.fecha} 
-                                onChange={handleInputChange}/>
-                        </div>
-{/*                         <div className="subgroup__input">
-                            <p>Hora</p>
-                            <input 
-                                type="time" 
-                                name="fecha" // Add the name attribute
-                                value={eventoModal.fecha} 
-                                onChange={handleInputChange}/>
-                        </div>
-                     */}
+                    <label>Imagen URL</label>
+                    <input 
+                        type="text" 
+                        name="imagen" 
+                        placeholder="Imagen ej: http://example.com/image.png" 
+                        value={educacionModal.imagen} 
+                        onChange={handleInputChange}/>
                     </div>
                     <button type="submit">Actualizar</button>
                 </form>
             </Modal>
             <Modal isOpen={isOpenDeleteModal}>
-                <div>Borrar Evento</div>
-                <p>Desea borrar el evento?</p>
+                <div>Borrar Educacion</div>
+                <p>Desea borrar el post de educación?</p>
                 <div>
                     <button onClick={async () => {
                         try {
-                            console.log(eventoModal);
-                            await axios.delete(`${_api}/api/evento/remove/${eventoModal.id}`).then(response => {
+                            console.log(educacion);
+                            await axios.delete(`${_api}/api/educacion/remove/${educacionModal.id}`).then(response => {
                                 console.log(response.data);
-                                fetchEventos();
+                                fetchEducacion();
                                 setIsOpenDeleteModal(false);
                                 cleanState();
                             });
@@ -247,4 +224,4 @@ const Eventos = () => {
     );
 };
 
-export default Eventos;
+export default Educacion;

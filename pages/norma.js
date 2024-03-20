@@ -5,39 +5,38 @@ import axios from 'axios';
 
 const _api = 'http://127.0.0.1:3001';
 
-const Eventos = () => {
-    const [isOpen, setIsOpen] = useState(false);
+const Norma = () => {
+    const [isOpen, setIsOpen] = useState(false);    
     const [isOpenEditableModal, setIsOpenEditableModal] = useState(false);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-    const [eventos, setEventos] = useState([]);
+    const [normas, setNormas] = useState([]);
 
-    // metodo fetch para obtener los eventos con axios
+    // metodo fetch para obtener los normas con axios
     const [eventoModal, setEventoModal] = useState({
         id: 0,
         id_admin: 0,
         titulo: '',
-        descripcion: '',
-        fecha: ''
+        descripcion: ''
     });
 
-    const fetchEventos = async () => {
+    const fetchNormas = async () => {
         try {
-            const response = await axios.get(`${_api}/api/evento/getAll`);
+            const response = await axios.get(`${_api}/api/norma/getAll`);
             console.log(response.data);
-            setEventos(response.data);
+            setNormas(response.data);
         } catch (error) {
             console.error(error);
         }
     }
 
-    //useEffect para obtener los eventos al cargar la pagina
+    //useEffect para obtener las normas al cargar la pagina
     useEffect(() => {
-        fetchEventos();
+        fetchNormas();
     }, []);
 
     // useEffect para verificar cambios en la base de datos
     useEffect(() => {
-        fetchEventos();
+        fetchNormas();
     }, [isOpen, isOpenEditableModal, isOpenDeleteModal]);
 
     const handleEdit = async (evento) => {
@@ -48,15 +47,14 @@ const Eventos = () => {
     const handleFormEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`${_api}/api/evento/update`, {
+            await axios.put(`${_api}/api/norma/update`, {
                 id: eventoModal.id,
                 idAdministrador: 1,
                 titulo: e.target[0].value,
-                descripcion: e.target[1].value,
-                fecha: e.target[2].value
+                descripcion: e.target[1].value
             }).then(response => {
                 console.log(response.data);
-                fetchEventos();
+                fetchNormas();
                 setIsOpenEditableModal(false);
             });
         } catch (error) {
@@ -69,6 +67,10 @@ const Eventos = () => {
         setEventoModal(evento);
     };
 
+    // Código para agregar un nuevo evento a la lista, desde una api usando axios
+    const handleAdd = () => {
+      
+    };
 
     const handleInputChange = (event) => {
         setEventoModal({
@@ -80,14 +82,13 @@ const Eventos = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${_api}/api/evento/create`, {
+            await axios.post(`${_api}/api/norma/create`, {
                 idAdministrador: 1,
                 titulo: e.target[0].value,
-                descripcion: e.target[1].value,
-                fecha: e.target[2].value
+                descripcion: e.target[1].value
             }).then(response => {
                 console.log(response.data);
-                fetchEventos();
+                fetchNormas();
                 setIsOpen(false);
             });
         } catch (error) {
@@ -100,16 +101,15 @@ const Eventos = () => {
             id: 0,
             id_admin: 0,
             titulo: '',
-            descripcion: '',
-            fecha: ''
+            descripcion: ''
         });
     }
     return (
         <>
             <EventsContainer>
                 <div className="events__header">
-                    <h2>Eventos</h2>
-                <button onClick={() => setIsOpen(!isOpen)}>Agregar nuevo evento</button>
+                    <h2>Normas</h2>
+                <button onClick={() => setIsOpen(!isOpen)}>Agregar nueva norma</button>
                 </div>
                 <table>
                     <thead>
@@ -118,18 +118,16 @@ const Eventos = () => {
                             <th>Administrador</th>
                             <th>Titulo</th>
                             <th>Descripcion</th>
-                            <th>Fecha</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {eventos.map(evento => (
+                        {normas.map(evento => (
                             <tr key={evento.id}>
                                 <td>{evento.id}</td>
                                 <td>{evento.id_admin}</td>
                                 <td>{evento.titulo}</td>
                                 <td>{evento.descripcion}</td>
-                                <td>{evento.fecha}</td>
                                 <td>
                                     <button onClick={() => handleEdit(evento)}>Editar</button>
                                     <button onClick={() => handleDelete(evento)}>Eliminar</button>
@@ -140,6 +138,7 @@ const Eventos = () => {
                 </table>
                 
             </EventsContainer>
+            //crear
             <Modal isOpen={isOpen}>
                 <div className="header__modal">
                     <h2>Agregar nuevo evento</h2>
@@ -154,28 +153,13 @@ const Eventos = () => {
                         <label>Descripcion</label>
                         <input type="text" placeholder="Descripcion del evento" />
                     </div>
-                    <div  className="group__input">
-                        <div className="subgroup__input">
-                            <p>Fecha</p>
-                            <input 
-                                type="date" 
-                                name="fecha"
-                            />
-                        </div>
-                      {/*   <div className="subgroup__input">
-                            <p>Hora</p>
-                            <input 
-                                type="time" 
-                                name="fecha"
-                            />
-                        </div> */}
-                    </div>
                     <button type="submit">Agregar</button>
                 </form>
             </Modal>
+
             <Modal isOpen={isOpenEditableModal}>
                 <div className="header__modal">
-                    <h2>Editar evento</h2>
+                    <h2>Editar Post educacion</h2>
                     <button onClick={() => setIsOpenEditableModal(!isOpenEditableModal)}>Cerrar</button>
                 </div>
                 <form onSubmit={handleFormEditSubmit}>
@@ -193,42 +177,24 @@ const Eventos = () => {
                         <input 
                             type="text" 
                             name="descripcion" // Add the name attribute
-                            placeholder="Descripcion del evento" 
+                            placeholder="Descripcion de la norma" 
                             value={eventoModal.descripcion} 
                             onChange={handleInputChange}/>
-                    </div>
-                    <div  className="group__input">
-                        <div className="subgroup__input">
-                            <p>Fecha</p>
-                            <input 
-                                type="date" 
-                                name="fecha" // Add the name attribute
-                                value={eventoModal.fecha} 
-                                onChange={handleInputChange}/>
-                        </div>
-{/*                         <div className="subgroup__input">
-                            <p>Hora</p>
-                            <input 
-                                type="time" 
-                                name="fecha" // Add the name attribute
-                                value={eventoModal.fecha} 
-                                onChange={handleInputChange}/>
-                        </div>
-                     */}
                     </div>
                     <button type="submit">Actualizar</button>
                 </form>
             </Modal>
+            
             <Modal isOpen={isOpenDeleteModal}>
-                <div>Borrar Evento</div>
-                <p>Desea borrar el evento?</p>
+                <div>Borrar Norma</div>
+                <p>Desea borrar la Norma?</p>
                 <div>
                     <button onClick={async () => {
                         try {
                             console.log(eventoModal);
-                            await axios.delete(`${_api}/api/evento/remove/${eventoModal.id}`).then(response => {
+                            await axios.delete(`${_api}/api/norma/remove/${eventoModal.id}`).then(response => {
                                 console.log(response.data);
-                                fetchEventos();
+                                fetchNormas();
                                 setIsOpenDeleteModal(false);
                                 cleanState();
                             });
@@ -247,4 +213,4 @@ const Eventos = () => {
     );
 };
 
-export default Eventos;
+export default Norma;

@@ -36,6 +36,20 @@ export const ModalContainer = styled.div`
             label {
                 margin-bottom: 0.5em;
             }
+            .subgroup__input {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                p {
+                    display: inline-block;
+                    margin-left: 0.5em;
+                }
+                input {
+                    width: 80%;
+                }
+            
+            }
         }
         button {
             padding: 1em;

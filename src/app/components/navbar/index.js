@@ -7,8 +7,8 @@ const Navbar = () => {
             <h1>Sistema Donacion</h1>
             <div className="container__links">
                 <Link href="/eventos">Evento</Link>
-                <Link href="/about">Educacion</Link>
-                <Link href="/contact">Norma</Link>
+                <Link href="/educacion">Educacion</Link>
+                <Link href="/norma">Norma</Link>
             </div>
         </NavbarStyled>
     );
