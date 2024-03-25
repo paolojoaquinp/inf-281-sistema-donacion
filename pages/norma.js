@@ -138,7 +138,7 @@ const Norma = () => {
                 </table>
                 
             </EventsContainer>
-            //crear
+            {/* crear */}
             <Modal isOpen={isOpen}>
                 <div className="header__modal">
                     <h2>Agregar nuevo evento</h2>
