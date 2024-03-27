@@ -1,22 +1,21 @@
-"use client";
+'use client'
+import React from "react";
+import Navbar from "../components/navbar";
+import { WelcomeContainer, ImageContainer, Section, Icon } from './dashboard-page-styled';
+import Link from 'next/link';
 
-import Image from "next/image";
-import styles from "./page.module.css";
-import Navbar from "./components/navbar";
-import Link from "next/link";
-import { WelcomeContainer, ImageContainer, Section, Icon } from "./dashboard/dashboard-page-styled";
 
-export default function Home() {
-  return (
-    <main>
-      <Navbar>
-        <h3>Portales: </h3>
-        <Link href="/portal/normas">Normas</Link>
-        <Link href="/portal/eventos">Eventos</Link>
-        <Link href="/portal/educacion">Educación</Link>
-      </Navbar>
-      <WelcomeContainer>
-      <h2 style={{ fontSize: '3rem' }}>Transforma Vidas con Cada Donación</h2>
+const Dashboard = () => {
+    return (
+        <WelcomeContainer>
+            <Navbar>
+                <h5>Añadir Posts</h5>
+                <Link href="/dashboard/eventos">Evento</Link>
+                <Link href="/dashboard/educacion">Educacion</Link>
+                <Link href="/dashboard/norma">Norma</Link>
+            </Navbar>
+            <br></br>
+          <h2 style={{ fontSize: '3rem' }}>Transforma Vidas con Cada Donación</h2>
           
           {/* Sección de Imágenes y Descripción General */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
@@ -34,15 +33,15 @@ export default function Home() {
           <p style={{ fontSize: '1.5rem' }}>En el Sistema de Donación, unimos a personas de buen corazón con causas que hacen una diferencia tangible en la comunidad. Cada contribución ayuda a fortalecer y empoderar a aquellos en necesidad, promoviendo la educación, salud, y bienestar para un futuro mejor.</p>
           
           {/* Sección de Educación */}
-            <Section>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Icon src="https://cdn-icons-png.flaticon.com/512/3142/3142780.png" alt="Educación" />
-                <div>
-                  <h3>Educación</h3>
-                  <p>Apoya programas educativos que empoderan a jóvenes y adultos, abriendo puertas a nuevas oportunidades y fomentando un cambio positivo en la comunidad.</p>
-                </div>
+          <Section>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Icon src="https://cdn-icons-png.flaticon.com/512/3142/3142780.png" alt="Educación" />
+              <div>
+                <h3>Educación</h3>
+                <p>Apoya programas educativos que empoderan a jóvenes y adultos, abriendo puertas a nuevas oportunidades y fomentando un cambio positivo en la comunidad.</p>
               </div>
-            </Section>
+            </div>
+          </Section>
           
           {/* Sección de Salud */}
           <Section>
@@ -69,6 +68,7 @@ export default function Home() {
           {/* Agrega más secciones según sea necesario */}
           
         </WelcomeContainer>
-    </main>
-  );
+      );
 }
+
+export default Dashboard;
