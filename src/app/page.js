@@ -9,12 +9,6 @@ import { WelcomeContainer, ImageContainer, Section, Icon } from "./dashboard/das
 export default function Home() {
   return (
     <main>
-      <Navbar>
-        <h3>Portales: </h3>
-        <Link href="/portal/normas">Normas</Link>
-        <Link href="/portal/eventos">Eventos</Link>
-        <Link href="/portal/educacion">Educación</Link>
-      </Navbar>
       <WelcomeContainer>
       <h2 style={{ fontSize: '3rem' }}>Transforma Vidas con Cada Donación</h2>
           

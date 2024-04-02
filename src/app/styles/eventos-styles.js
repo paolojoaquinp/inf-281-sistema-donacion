@@ -7,22 +7,25 @@ export const EventsContainer = styled.div`
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
     padding: 3% 20%;
+    table {
+      font-size: 6rem;
+    }
     .events__header{
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         h2{
-           font-size: 2rem;
+           font-size: 4rem;
         }
         button {
-            font-size: 1.2rem;
-            padding: 10px;
-            height: 50px;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+          font-size: 1.2rem;
+          padding: 10px;
+          height: 50px;
+          border-radius: 5px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
             cursor: pointer;
         }
     }

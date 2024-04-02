@@ -1,0 +1,8 @@
+import Layout from "@/app/components/layout" 
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}

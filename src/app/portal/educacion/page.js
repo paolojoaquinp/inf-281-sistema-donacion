@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { EventsContainer } from '@/app/styles/portal/eventos-styled';
 import CardPortal from '../components/card';
-import Navbar from '@/app/components/navbar';
 import axios from 'axios';
 import Link from 'next/link';
+import MotionPage from '@/app/styles/motion-page';
 
 const _api = 'http://127.0.0.1:3001';
 
@@ -27,13 +27,7 @@ const Educacion = () => {
     }, []);
 
     return (
-        <>
-            <Navbar>
-                <h3>Portales: </h3>
-                <Link href="/portal/normas">Normas</Link>
-                <Link href="/portal/eventos">Eventos</Link>
-                <Link href="/portal/educacion">Educación</Link>
-            </Navbar>
+        <MotionPage>
             <EventsContainer>
                 <h2>Educacion</h2>
                 <p>Portal de educacion</p>
@@ -41,7 +35,7 @@ const Educacion = () => {
                     <CardPortal key={evento.id} {...evento} />
                 ))}
             </EventsContainer>
-        </>
+        </MotionPage>
     );
 };
 

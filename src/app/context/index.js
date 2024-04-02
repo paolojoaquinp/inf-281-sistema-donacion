@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import { AuthProvider } from "./auth";
 import { AlertProvider } from "./alert";
 import { ModalProvider } from "./modal";

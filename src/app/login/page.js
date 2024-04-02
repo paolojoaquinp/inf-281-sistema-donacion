@@ -12,7 +12,7 @@ import ModalContext from '@/app/context/modal';
 
 const Login = () => {
     const router = useRouter();
-    const { setAuth } = useContext(AuthContext);
+    const { auth,setAuth } = useContext(AuthContext);
     const { setAlert } = useContext(AlertContext);
     const { setIsOpen } = useContext(ModalContext);
 
@@ -32,8 +32,8 @@ const Login = () => {
                 email: values.email,
                 password: values.password
             }).then(response => {
+                setAuth({id:response.data.id, token:response.data.token});
                 console.log("mi data: ",response.data);
-                setAuth(response.data);
                 router.push('/dashboard');
             });
         }

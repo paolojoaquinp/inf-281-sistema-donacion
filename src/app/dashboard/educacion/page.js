@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { EventsContainer } from '@/app/styles/eventos-styles';
 import Modal from '@/app/components/modal';

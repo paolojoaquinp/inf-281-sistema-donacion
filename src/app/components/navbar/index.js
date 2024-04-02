@@ -15,22 +15,24 @@ const Navbar = ({children}) => {
         })
             .then(response => {
                 console.log(response.data);
-                setAuth(false);
+                setAuth({});
                 router.push('/login');
             });
     }
-
+    console.log(auth.id);
     return (
         <NavbarStyled >
             <h1>Sistema Donacion</h1>
             <div className="container__links">
-                {auth ?
+                {auth.id ?
                     <>
                         <button onClick={handleLogout}>Cerrar Sesion</button> 
                         <br />
                         <br />
                     </>
-                    : <div></div>
+                    : <div>
+                        <Link href="/login">Iniciar Sesion</Link>
+                    </div>
                     
                 }
                 {children}
