@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
                 <Navbar>
                     {0==0 ? 
                         <>
-                            <h5>Añadir Posts</h5>
+                            <h3>Añadir Posts</h3>
                             <Link href="/dashboard/eventos">Evento</Link>
                             <Link href="/dashboard/educacion">Educacion</Link>
                             <Link href="/dashboard/norma">Norma</Link> 
@@ -27,8 +27,8 @@ const Layout = ({ children }) => {
                     <Link href="/portal/normas">Normas</Link>
                     <Link href="/portal/eventos">Eventos</Link>
                     <Link href="/portal/educacion">Educación</Link>
-                    
-
+                    <h3>Reportes</h3>
+                    <Link href="/dashboard/reportes/voluntarios">Reporte Voluntario</Link>
                 </Navbar>
                 {children}
             </Providers>

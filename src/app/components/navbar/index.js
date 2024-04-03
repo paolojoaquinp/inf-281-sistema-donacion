@@ -1,4 +1,4 @@
-import react, { useContext } from 'react';
+import react, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AuthContext from '@/app/context/auth';
@@ -7,6 +7,14 @@ import { NavbarStyled } from './navbar-styled';
 const Navbar = ({children}) => {
     const { auth, setAuth } = useContext(AuthContext);
     const router = useRouter();
+
+    useEffect(() => {
+        const storedAuth = JSON.parse(localStorage.getItem('auth'));
+        if (storedAuth && storedAuth.token) {
+            setAuth(storedAuth);
+            console.log("storedAuth: ", storedAuth);
+        }
+    }, []);
 
     const handleLogout = async () => {
         console.log(auth.id);
@@ -19,12 +27,13 @@ const Navbar = ({children}) => {
                 router.push('/login');
             });
     }
-    console.log(auth.id);
     return (
         <NavbarStyled >
-            <h1>Sistema Donacion</h1>
+            <Link href="/dashboard">
+                <h1>Sistema Donacion</h1>
+            </Link>
             <div className="container__links">
-                {auth.id ?
+                {auth ?
                     <>
                         <button onClick={handleLogout}>Cerrar Sesion</button> 
                         <br />

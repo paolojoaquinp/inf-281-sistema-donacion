@@ -33,6 +33,7 @@ const Login = () => {
                 password: values.password
             }).then(response => {
                 setAuth({id:response.data.id, token:response.data.token});
+                localStorage.setItem('auth', JSON.stringify({token:response.data.token}));
                 console.log("mi data: ",response.data);
                 router.push('/dashboard');
             });
