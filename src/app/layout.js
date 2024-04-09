@@ -17,8 +17,8 @@ export default function RootLayout({ children }) {
         </Layout>
       <footer className='footer'>
           <div style={{ backgroundColor: '#282c34', color: 'white', padding: '10px' }}>
-              <h1>Footer</h1>
-              <p>© 2022 Your Company</p>
+              <h1>Sistema de donaciones</h1>
+              <p>© 2024 Sistema de donaciones</p>
               <p>
                   Follow us on:
                   <a href="https://www.facebook.com/yourcompany" style={{ color: 'white', marginLeft: '10px' }}>Facebook</a>,

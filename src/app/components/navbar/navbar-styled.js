@@ -16,8 +16,20 @@ export const NavbarStyled = styled.div`
     > .container__links {
         font-size: 2rem;
         color: white;
+        width: 70%;
         a {
             padding-right: 5%;
+        }
+        .navbar-actions__container {
+            font-size: 3rem;
+            display: flex;
+            justify-content: space-between;
+            .group__links {
+                h3 {
+                    font-size:1.5rem;
+                    font-style: bold;
+                }
+            }
         }
     }
 `;
