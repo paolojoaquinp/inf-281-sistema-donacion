@@ -4,9 +4,16 @@ import { useRouter } from 'next/navigation';
 import AuthContext from '@/app/context/auth';
 import Link from 'next/link';
 import { NavbarStyled } from './navbar-styled';
+import { MdOutlineNotifications } from "react-icons/md";
+import { NotificationContext } from '@/app/context/chat/NotificationContext';
+
 const Navbar = ({children}) => {
     const { auth, setAuth } = useContext(AuthContext);
     const router = useRouter();
+
+    // state socket
+    const { notificationState } = useContext(NotificationContext);
+    console.log("notificationState: ", notificationState.notificaciones);
 
     useEffect(() => {
         const storedAuth = JSON.parse(localStorage.getItem('auth'));
@@ -17,7 +24,6 @@ const Navbar = ({children}) => {
     }, []);
 
     const handleLogout = async () => {
-        console.log(auth.id);
         await axios.post('http://localhost:3001/api/usuarios/logout',{
             id: auth.id
         })
@@ -42,9 +48,15 @@ const Navbar = ({children}) => {
                     : <div>
                         <Link href="/login">Iniciar Sesion</Link>
                     </div>
-                    
                 }
                 {children}
+            </div>
+            <div className='notifications__wrapper'>
+                {notificationState.notificaciones.length > 0 ?
+                    <div className="red-ball"></div>
+                    : <></>
+                }
+                <MdOutlineNotifications size={30} color='white'/>
             </div>
         </NavbarStyled >
     );

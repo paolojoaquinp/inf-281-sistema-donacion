@@ -32,4 +32,20 @@ export const NavbarStyled = styled.div`
             }
         }
     }
+
+    .notifications__wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        .red-ball {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            top: 0;
+            right: 0;
+        }
+    }
 `;
