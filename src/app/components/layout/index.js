@@ -1,27 +1,39 @@
 'use client'
-import react, {useContext} from 'react';
+import react, {useContext, useEffect, useState} from 'react';
 import Navbar from "../navbar";
 import { Providers } from '@/app/context';
 import Link from "next/link";
 import useAuth from '@/app/hooks/auth';
 import AuthContext from '@/app/context/auth';
+import { LayoutStyled } from './layout-styled';
 
 const Layout = ({ children }) => {
-    const {auth, setAuth} = useContext(AuthContext);
+
+    const [auth, setAuth] = useState({});
+
+    useEffect(() => {
+        const storedAuth = JSON.parse(localStorage.getItem('auth'));
+        if (storedAuth && storedAuth.token) {
+            setAuth({
+                id: storedAuth.id,
+                token: storedAuth.token
+            });
+        }
+    }, []);
+
+
     return (
-        <div>
+        <LayoutStyled>
             <Providers>
                 <Navbar>
                     <div className='navbar-actions__container'>
-                        {0==0 ? 
+                        {auth?.id ? 
                             <div className='group__links'>
                                 <h3>Añadir Posts</h3>
                                 <Link href="/dashboard/eventos">Evento</Link>
                                 <Link href="/dashboard/educacion">Educacion</Link>
                                 <Link href="/dashboard/norma">Norma</Link> 
-                                <Link href="/dashboard/voluntarios">Voluntarios</Link> 
-                                <Link href="/dashboard/beneficiarios">Beneficiarios</Link> 
-                                <Link href="/dashboard/donantes">Donantes</Link> 
+                                <Link href="/dashboard/usuarios">Usuarios</Link> 
                             </div>
                             :
                             <></>
@@ -38,9 +50,11 @@ const Layout = ({ children }) => {
                         </div>
                     </div>
                 </Navbar>
-                {children}
+                <div className='layout-body__wrapper'>
+                    {children}
+                </div>
             </Providers>
-        </div>
+        </LayoutStyled>
     );
 }
 

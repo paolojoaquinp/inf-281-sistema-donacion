@@ -1,240 +1,175 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { EventsContainer } from '@/app/styles/eventos-styles';
-import Modal from '@/app/components/modal';
-import axios from 'axios';
+/*
 
-const _api = 'http://127.0.0.1:3001';
+    const handleSubmit = async (values) => {
+        try {
+            console.log("PRESSED")
+            const userResponse = await axios.post('http://localhost:3001/api/usuarios/create', {
+                nombre: values.usuario.nombre,
+                paterno: values.usuario.paterno,
+                materno: values.usuario.materno,
+                direccion: values.usuario.direccion,
+                telefono: values.usuario.telefono,
+                email: values.usuario.email,
+                password: values.usuario.password
+            });
 
-const Donantes = () => {
-    const [isOpen, setIsOpen] = useState(false);    
-    const [isOpenEditableModal, setIsOpenEditableModal] = useState(false);
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-    const [donantes, setDonantes] = useState([]);
+            console.log('exito donante: ', userResponse.data);
+        
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-    // metodo fetch para obtener los normas con axios
-    const [donanteModal, setDonanteModal] = useState({
-        id: 0,
-        idUser: 0,
-        ubicacion: '',
-        tipo:'',
-        //fecha:''
+    const validationSchema = Yup.object({
+        "usuario.email": Yup.string().email('Invalid email format').required('Required'),
+        "usuario.password": Yup.string().required('Required'),
     });
 
-    const fetchDonantes = async () => {
-        try {
-            const response = await axios.get(`${_api}/api/donante/getAll`);
-            console.log(response.data);
-            setDonantes(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
-    //useEffect para obtener las normas al cargar la pagina
-    useEffect(() => {
-        fetchDonantes();
-    }, []);
+ */
 
-    // useEffect para verificar cambios en la base de datos
-    useEffect(() => {
-        fetchDonantes();
-    }, [isOpen, isOpenEditableModal, isOpenDeleteModal]);
 
-    const handleEdit = async (evento) => {
-        setIsOpenEditableModal(!isOpenEditableModal);
-        setDonanteModal(evento);
+'use client'
+import React, { useContext } from 'react';
+import { CustomInputGroup, CustomInput, CustomSelect } from '@/app/components/custom-form-components';
+import { DonantesWrapper } from './donantes-styles';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import AuthContext from '@/app/context/auth';
+import AlertContext from '@/app/context/alert';
+import ModalContext from '@/app/context/modal';
+import Link from 'next/link';
+import PrimaryButton from '@/app/components/primary-button';
+const Donante = () => {
+    const router = useRouter();
+    const { setAuth } = useContext(AuthContext);
+    const { setAlert } = useContext(AlertContext);
+    const { setIsOpen } = useContext(ModalContext);
+
+    const initialValues = {
+        nombre: '',
+        paterno: '',
+        materno: '',
+        direccion: '',
+        telefono: '',
+        email: '',
+        password: '',
+        direccionDonante: '',
+        tipoDonante:''
     };
 
-    const handleFormEditSubmit = async (e) => {
-        e.preventDefault();
+    const validationSchema = Yup.object({
+        email: Yup.string().email('Invalid email format').required('Required'),
+        password: Yup.string().required('Required')
+    });
+
+    const onSubmit = async (values) => {
         try {
-            await axios.put(`${_api}/api/donante/update`, {
-                id: DonanteModal.id,
-                idUser: e.target[0].value,
-                ubicacion: e.target[1].value,
-                tipo: e.target[2].value
-                //fecha: e.target[3].value
-            }).then(response => {
-                console.log(response.data);
-                fetchDonantes();
-                setIsOpenEditableModal(false);
+            const userResponse = await axios.post('http://localhost:3001/api/usuarios/create', {
+                nombre: values.nombre,
+                paterno: values.paterno,
+                materno: values.materno,
+                direccion: values.direccion,
+                telefono: values.telefono,
+                email: values.email,
+                password: values.password
+            })
+
+            const donanteResponse = await axios.post('http://localhost:3001/api/donante/create', {
+                idUser: userResponse.data.data,
+                ubicacion: values.direccionDonante,
+                tipo: values.tipoDonante,
             });
-        } catch (error) {
+
+            console.log(userResponse);
+            console.log(donanteResponse.data);
+            router.push('/dashboard');
+        }
+        catch (error) {
             console.error(error);
+            setAlert({ message: 'Invalid email or password', type: 'error' });
         }
     }
 
-    const handleDelete = (evento) => {
-        setIsOpenDeleteModal(!isOpenDeleteModal);
-        setEventoModal(evento);
-    };
-
-    const handleInputChange = (event) => {
-        setDonanteModal({
-            ...eventoModal,
-            [event.target.name]: event.target.value
-        });
-      };
-
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`${_api}/api/donante/create`, {
-                idUser: e.target[0].value,
-                ubicacion: e.target[1].value,
-                tipo: e.target[2].value,
-                //fecha: e.target[3].value
-            }).then(response => {
-                console.log(response.data);
-                fetchDonantes();
-                setIsOpen(false);
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const cleanState = () => {
-        setDonanteModal({
-            id: 0,
-            idUser: 0,
-            ubicacion: '',
-            tipo:'',
-            //fecha:''
-        });
-    }
     return (
-        <>
-            <EventsContainer>
-                <div className="events__header">
-                    <h2>Donantes</h2>
-                <button onClick={() => setIsOpen(!isOpen)}>Agregar nuevo donante</button>
-                </div>
-                <br />
-                <br />
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Ubicacion</th>
-                            <th>Tipo</th>
-                            <th>Fecha</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {donantes.length>0 && donantes?.map(donante => (
-                            <tr key={donante.id}>
-                                <td>{donante.id}</td>
-                                <td>{donante.nombre}</td>
-                                <td>{donante.ubicacion}</td>
-                                <td>{donante.tipo}</td>
-                                <td>{donante.createdat}</td>
-                                {/* <td>{evento.Fecha}</td> */}
-                                <td>
-                                    <button onClick={() => handleEdit(donante)}>Editar</button>
-                                    <button onClick={() => handleDelete(donante)}>Eliminar</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                
-            </EventsContainer>
-            {/* crear */}
-            <Modal isOpen={isOpen}>
-                <div className="header__modal">
-                    <h2>Agregar nuevo evento</h2>
-                    <button onClick={() => setIsOpen(!isOpen)}>Cerrar</button>
-                </div>
-                <form onSubmit={handleFormSubmit}>
-                    <div className="group__input">
-                        <label>idUser</label>
-                        <input type="number" placeholder="id de Usuario" />
-                    </div>
-
-                    <div className="group__input">
-                        <label>Ubicacion</label>
-                        <input type="text" placeholder="Ubicacion" />
-                    </div>
-
-                    <div className="group__input">
-                        <label>Tipo</label>
-                        <input type="text" placeholder="Tipo" />
-                    </div>
-
-                    <button type="submit">Agregar</button>
-                </form>
-            </Modal>
-
-            <Modal isOpen={isOpenEditableModal}>
-                <div className="header__modal">
-                    <h2>Editar Donante</h2>
-                    <button onClick={() => setIsOpenEditableModal(!isOpenEditableModal)}>Cerrar</button>
-                </div>
-                <form onSubmit={handleFormEditSubmit}>
-                    <div className="group__input">
-                        <label>id usuario</label>
-                        <input 
-                            type="number"
-                            name="iduser" // Add the name attribute
-                            value={donanteModal.iduser}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="group__input">
-                        <label>Ubicacion</label>
-                        <input 
-                            type="text"
-                            name="ubicacion" // Add the name attribute
-                            value={donanteModal.ubicacion}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="group__input">
-                        <label>tipo</label>
-                        <input 
-                            type="text"
-                            name="tipo" // Add the name attribute
-                            value={donanteModal.tipo}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <button type="submit">Actualizar</button>
-                </form>
-            </Modal>
-            
-            <Modal isOpen={isOpenDeleteModal}>
-                <div>Borrar Donante</div>
-                <p>Desea borrar al donante?</p>
-                <div>
-                    <button onClick={async () => {
-                        try {
-                            console.log(donanteModal);
-                            await axios.delete(`${_api}/api/donante/remove/${donanteModal.id}`).then(response => {
-                                console.log(response.data);
-                                fetchDonantes();
-                                setIsOpenDeleteModal(false);
-                                cleanState();
-                            });
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    }}>Si</button>
-                    <button onClick={function () {
-                        setIsOpenDeleteModal(false);
-                        cleanState();
-                    }
-                    }>No</button>
-                </div>
-            </Modal>
-        </>
+        <DonantesWrapper>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={onSubmit}
+                >
+                <Form>
+                    <h1>Nuevo Donante</h1>
+                    <section className='form-section__container'>
+                        <h6>1. Datos personales</h6>
+                        <p>Complete los campos con la información indicada</p>
+                        <CustomInputGroup>
+                            <label htmlFor="nombre">Nombre</label>
+                            <Field type="text" name="nombre" id="nombre" />
+                            <ErrorMessage name="nombre" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor="paterno">Paterno</label>
+                            <Field type="text" name="paterno" id="paterno" />
+                            <ErrorMessage name="paterno" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor="materno">Materno</label>
+                            <Field type="text" name="materno" id="materno" />
+                            <ErrorMessage name="materno" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor="direccion">Direccion</label>
+                            <Field type="text" name="direccion" id="direccion" />
+                            <ErrorMessage name="direccion" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor="telefono">Telefono</label>
+                            <Field type="text" name="telefono" id="telefono" />
+                            <ErrorMessage name="telefono" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor="email">Email</label>
+                            <Field type="email" name="email" id="email" />
+                            <ErrorMessage name="email" component="span" />
+                        </CustomInputGroup>
+                    </section>
+                    <section className='form-section__container'>
+                        <h6>2. Donante</h6>
+                        <p>Complete los campos con la información indicada</p>
+                        <CustomInputGroup>
+                            <label htmlFor="direccionDonante">Direccion</label>
+                            <Field type="text" name="direccionDonante" id="direccionDonante" />
+                            <ErrorMessage name="direccionDonante" component="span" />
+                        </CustomInputGroup>
+                        <CustomInputGroup>
+                            <label htmlFor='tipoDonante'>Tipo Donante</label>
+                            <Field as="select" name="tipoDonante" id="tipoDonante">
+                                <option value="">Selecciona...</option>
+                                <option value="persona">Persona</option>
+                                <option value="organizacion">Organizacion</option>
+                            </Field>
+                        </CustomInputGroup>
+                    </section>
+                    <section className='form-section__container'>
+                        <h6>3. Contraseña</h6>
+                        <p>Complete los campos con la información indicada</p>
+                        <CustomInputGroup>
+                            <label htmlFor="password">Password</label>
+                            <Field type="password" name="password" id="password" />
+                            <ErrorMessage name="password" component="span" />
+                        </CustomInputGroup>
+                    </section>
+                    <PrimaryButton color="red" onClick={() => router.back()}>Cancelar</PrimaryButton>
+                    <PrimaryButton type="submit">Guardar</PrimaryButton>
+                </Form>
+            </Formik>
+        </DonantesWrapper>
     );
-};
+}
 
-export default Donantes;
+export default Donante; 
+

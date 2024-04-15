@@ -14,13 +14,28 @@ const Navbar = ({children}) => {
     useEffect(() => {
         const storedAuth = JSON.parse(localStorage.getItem('auth'));
         if (storedAuth && storedAuth.token) {
-            setAuth(storedAuth);
-            console.log("storedAuth: ", storedAuth);
+            setAuth({
+                id: storedAuth.id,
+                token: storedAuth.token
+            });
         }
-
-
     }, []);
 
+    useEffect(() => {
+        if(auth.id) {
+            fetchNotifications();
+        }
+    }
+    , [auth]);
+    
+    const fetchNotifications = async () => {
+        await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
+        .then((response) => {
+            if(response.data.length > 0) {
+                setIsNotification(true);
+            }
+        });
+    };
     
 
     const handleLogout = async () => {
@@ -52,7 +67,7 @@ const Navbar = ({children}) => {
                 {children}
             </div>
             <div className='notifications__wrapper'>
-                {1 > 0 ?
+                {isNotification ?
                     <div className="red-ball"></div>
                     : <></>
                 }
