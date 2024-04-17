@@ -9,6 +9,7 @@ import { MdOutlineNotifications } from "react-icons/md";
 const Navbar = ({children}) => {
     const { auth, setAuth } = useContext(AuthContext);
     const [isNotification, setIsNotification] = useState(false);
+    const [role, setRole] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -20,10 +21,10 @@ const Navbar = ({children}) => {
             });
         }
     }, []);
-
     useEffect(() => {
         if(auth.id) {
             fetchNotifications();
+            setRole(localStorage.getItem('rol'));
         }
     }
     , [auth]);
@@ -46,12 +47,15 @@ const Navbar = ({children}) => {
                 console.log(response.data);
                 setAuth({});
                 router.push('/login');
+                localStorage.setItem('rol','');
+                setRole(localStorage.getItem('rol'));
             });
     }
     return (
         <NavbarStyled >
             <Link href="/dashboard">
                 <h1>Sistema Donacion</h1>
+                <p className='role_text'>Rol: {role}</p>
             </Link>
             <div className="container__links">
                 {auth ?
@@ -67,11 +71,13 @@ const Navbar = ({children}) => {
                 {children}
             </div>
             <div className='notifications__wrapper'>
-                {isNotification ?
-                    <div className="red-ball"></div>
-                    : <></>
-                }
-                <MdOutlineNotifications size={30} color='white'/>
+                <Link href="/dashboard/notificaciones">
+                    {isNotification ?
+                        <div className="red-ball"></div>
+                        : <></>
+                    }
+                    <MdOutlineNotifications size={30} color='white'/>
+                </Link>
             </div>
         </NavbarStyled >
     );

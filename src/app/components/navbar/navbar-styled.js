@@ -13,6 +13,10 @@ export const NavbarStyled = styled.div`
         color: white;
         font-size: 2rem;
     }
+    .role_text {
+        font-size: 1.2rem;
+        text-decoration: none;
+    }
     > .container__links {
         font-size: 2rem;
         color: white;

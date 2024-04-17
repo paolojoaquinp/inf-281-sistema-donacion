@@ -44,12 +44,43 @@ const Login = () => {
         }
     }
 
+    const onSubmitTest = async (values) => {
+        try {
+            
+            await axios.post('http://localhost:3001/api/usuarios/login', {
+                email: values.email,
+                password: values.password
+            }).then(response => {
+                setAuth({id:response.data.id, token:response.data.token});
+                localStorage.setItem('auth', JSON.stringify({token:response.data.token, id:response.data.id}));
+                console.log("mi data: ",response.data);
+            }).then(async (_) => {
+                const roles = ['beneficiario', 'voluntario', 'donante'];
+                for (let role of roles) {
+                    const roleResponse = await axios.get(`http://localhost:3001/api/${role}/findById/${auth.id}`);
+                    console.log('datos length: ', roleResponse);
+                    if (roleResponse.data != null) {
+                        // If there's a match, set the role in localStorage and stop checking
+                        localStorage.setItem('rol', role);
+                        break;
+                    }
+                    localStorage.setItem('rol', 'administrador');
+                }
+                router.push('/dashboard');
+            });
+        }
+        catch (error) {
+            console.error(error);
+            setAlert({ message: 'Invalid email or password', type: 'error' });
+        }
+    }
+
     return (
         <LoginStyled>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={onSubmit}
+                onSubmit={onSubmitTest}
             >
                 <Form>
                     <h1>Login</h1>
