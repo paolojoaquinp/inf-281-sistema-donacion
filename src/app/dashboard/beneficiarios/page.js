@@ -67,7 +67,7 @@ const Beneficiario = () => {
                 onSubmit={onSubmit}
                 >
                 <Form>
-                    <h1>Nuevo Voluntario</h1>
+                    <h1>Nuevo Beneficiario</h1>
                     <section className='form-section__container'>
                         <h6>1. Datos personales</h6>
                         <p>Complete los campos con la información indicada</p>

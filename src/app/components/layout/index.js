@@ -13,6 +13,8 @@ const Layout = ({ children }) => {
 
     useEffect(() => {
         const storedAuth = JSON.parse(localStorage.getItem('auth'));
+
+        // rol: localStorage.getItem('auth'))
         if (storedAuth && storedAuth.token) {
             setAuth({
                 id: storedAuth.id,
@@ -30,9 +32,11 @@ const Layout = ({ children }) => {
                         {auth?.id ? 
                             <div className='group__links'>
                                 <h3>Añadir Posts</h3>
+                                {/* rol == 'administador' || 'donante' */}
                                 <Link href="/dashboard/eventos">Evento</Link>
                                 <Link href="/dashboard/educacion">Educacion</Link>
                                 <Link href="/dashboard/norma">Norma</Link> 
+                                <Link href="/dashboard/donacion">Donacion</Link> 
                                 <Link href="/dashboard/usuarios">Usuarios</Link> 
                             </div>
                             :
