@@ -38,3 +38,58 @@ body {
   font-size: 4rem;
   width: 100%;
 }
+
+/* home container main page */
+.home__container {
+  background-color: #fafafa;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 25px; 
+  color: #333;
+  margin: 20px auto;
+  max-width: 1000px;
+}
+/* section */
+.home__container .section {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.5rem;
+}
+
+.home__container .section h3{
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+.home__container .section p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+/* image container */ 
+.home__container .image__container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+.home__container .image__container img {
+  border-radius: 20px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.home__container .image__container img:hover {
+  transform: scale(1.05);
+}
+
+/* icon img */
+.home__container .icon__img {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+}
