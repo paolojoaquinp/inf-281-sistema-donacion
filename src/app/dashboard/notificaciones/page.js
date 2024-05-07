@@ -1,29 +1,51 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, use } from "react";
 import axios from "axios";
 import { NotificacionesWrapper } from './notificaciones-styled';
+import AuthContext from "@/app/context/auth";
+import { messagesNotification } from "@/app/utils/constants";
+import Link from "next/link";
 const Notificaciones = () => {
     const [notifications, setNotifications] = useState([]);
+    const { auth , setAuth } = useContext(AuthContext);
+    const [rol, setRol] = useState('');
 
-    const fetchNotifications = async () => {
-        const auth = JSON.parse(localStorage.getItem('auth'));
-        await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
-        .then((response) => {
-            if(response.data.length > 0) {
-                setNotifications(response.data);
+    const fetchNotifications = async (message) => {
+        try {
+            const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findByType/${message}`)
+            if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
+                setNotifications(notifiactionResponse.data);
             }
-        });
+            for(let notification of notifiactionResponse.data) {
+                if(!notification.read) {
+                    await readNotification(notification.id);
+                }
+            }
+            
+        } catch (error) {
+            console.error(error);
+        }
+        
     };
 
+    const readNotification = async (id) => {
+        try {
+            await axios.put(`http://localhost:3001/api/notificacion/read/${id}`)
+            .then((response) => {
+                console.log(response.data);
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
-       fetchNotifications();
-/*        if(notifications.data.length) {
-            await axios.post(`http://localhost:3001/api/notificacion/read/${auth.id}`)
-                .then(response => {
-                    console.log("readed");
-                });
-       } */
-    }, []);
+        setRol(localStorage.getItem('rol'));
+        if(rol === 'administrador') {
+            fetchNotifications(messagesNotification.NUEVA_DONACION);
+            console.log("reading notifications...");
+        }
+    },[rol]);
 
     return (
         <NotificacionesWrapper>
@@ -33,7 +55,9 @@ const Notificaciones = () => {
                         <p>ID</p>
                         <p>received_id</p>
                         <p>sender_id</p>
-                        <p>Message</p>
+                        <p>Mensaje</p>
+                        <p>Leido</p>
+                        <p>Acciones</p>
                 </div>
                 <div className="table__body">
                     {notifications.map(el => {
@@ -42,6 +66,12 @@ const Notificaciones = () => {
                                 <p>{el.sender_id}</p>
                                 <p>{el.receiver_id}</p>
                                 <p>{el.message}</p>
+                                <p>{el.isread ? 'Leido' : 'No leido'}</p>
+                                <p>
+                                    <Link
+                                        href="/dashboard/donacion-admin"
+                                    >Ir a donaciones</Link>
+                                </p>
                             </div>
                         })
                     }

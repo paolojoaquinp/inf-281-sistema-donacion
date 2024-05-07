@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const CustomInputStyled = styled.div`
     display: flex;
+    flex-direction: "row";
     align-items: center;
     margin-bottom: 10px;
     flex-wrap:wrap;

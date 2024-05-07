@@ -1,4 +1,4 @@
-import react, { useContext, useEffect, useState } from 'react';
+import react, { use, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AuthContext from '@/app/context/auth';
@@ -28,6 +28,8 @@ const Navbar = ({children}) => {
         }
     }
     , [auth]);
+
+
     
     const fetchNotifications = async () => {
         await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
@@ -68,7 +70,71 @@ const Navbar = ({children}) => {
                         <Link href="/login">Iniciar Sesion</Link>
                     </div>
                 }
-                {children}
+                {/* Auth Roles "prev children" */}
+                    <div className='navbar-actions__container'>
+                        {auth.id
+                             ? 
+                            <>
+                                {/* Enlaces para Admin */}
+                                {role === 'administrador' || 0==0 && (
+                                    <div className='group__links'>
+                                        <h3>Admin Links</h3>
+                                        <Link href="/dashboard/eventos">Evento</Link>
+                                        <Link href="/dashboard/educacion">Educación</Link>
+                                        <Link href="/dashboard/norma">Norma</Link>
+                                        <Link href="/dashboard/donacion">Donación</Link>
+                                        <Link href="/dashboard/usuarios">Usuarios</Link>
+                                        <Link href="/dashboard/reportes/voluntarios">Reportes</Link>
+                                    </div>
+                                )}
+
+                                {/* Enlaces para Voluntario */}
+                                {role === 'voluntario' && (
+                                    <div className='group__links'>
+                                        <h3>Voluntario Links</h3>
+                                        <Link href="/portal/normas">Normas</Link>
+                                        <Link href="/portal/eventos">Eventos</Link>
+                                        <Link href="/portal/educacion">Educación</Link>
+                                        <Link href="/dashboard/reportes/voluntarios">Reportes</Link>
+                                    </div>
+                                )}
+
+                                {/* Enlaces para Donante */}
+                                {role === 'donante' && (
+                                    <div className='group__links'>
+                                        <h3>Donante Links</h3>
+                                        <Link href="/portal/normas">Normas</Link>
+                                        <Link href="/portal/eventos">Eventos</Link>
+                                        <Link href="/portal/educacion">Educación</Link>
+                                        <Link href="/dashboard/donacion">Donación</Link>
+                                    </div>
+                                )}
+
+                                {/* Enlaces para Beneficiario */}
+                                {role === 'beneficiario' && (
+                                    <div className='group__links'>
+                                        <h3>Beneficiario Links</h3>
+                                        <Link href="/portal/normas">Normas</Link>
+                                        <Link href="/portal/eventos">Eventos</Link>
+                                        <Link href="/portal/educacion">Educación</Link>
+                                        <Link href="/dashboard/solicitud">Solicitud</Link>   {/* Solicitudes de beneficiarios */}
+                                    </div>
+                                )}
+                                {role === '' && (
+                                    <div className='group__links'>
+                                        <h3>Bienvenido</h3>
+                                        <Link href="/portal/normas">Normas</Link>
+                                        <Link href="/portal/eventos">Eventos</Link>
+                                        <Link href="/portal/educacion">Educación</Link>
+                                        
+                                    </div>
+                                )}
+                            </>
+                            :
+                            <p>No user is logged in.</p>
+                        }
+                    </div>
+                {/* end */}
             </div>
             <div className='notifications__wrapper'>
                 <Link href="/dashboard/notificaciones">

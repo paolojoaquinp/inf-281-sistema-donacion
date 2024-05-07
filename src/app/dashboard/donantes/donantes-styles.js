@@ -26,6 +26,29 @@ export const DonantesWrapper = styled.div`
             font-size: 1.5rem;
             margin-bottom: 2%;
         }
+        .section__checkbox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2%;
+            div {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+            }
+            label {
+                width: 100%;
+                font-size: 1.5rem;
+                margin-left: 1%;
+            }
+        
+        }
     }
     span {
         color: red;

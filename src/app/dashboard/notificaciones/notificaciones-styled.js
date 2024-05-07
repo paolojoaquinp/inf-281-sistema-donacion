@@ -27,10 +27,20 @@ export const NotificacionesWrapper = styled.div`
                 border-radius: 16px;
                 display: flex;
                 width: 100%;
+                align-items: center;
+                padding: 1% 0;
                 p {
                     width: calc(100%/3);
                     display: inline-block;
                     text-align:center;
+                    a {
+                        background-color: #282c34;
+                        border-radius: 16px;
+                        display: inline-block;
+                        padding: 4%;
+                        color: white;
+                        text-decoration: none;
+                    }
                 }
             }
         }

@@ -2,7 +2,7 @@
 import React from "react"
 import { CustomInputStyled } from "./custom-form-styled";
 
-export const CustomInputGroup = ({children}) => {
+export const CustomInputGroup = ({children,}) => {
     return (
         <CustomInputStyled>
             {children}

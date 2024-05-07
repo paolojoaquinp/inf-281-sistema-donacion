@@ -16,13 +16,15 @@ bun dev
 
 ## testing users:
 
+['beneficiario', 'voluntario', 'donante', 'administrador']
+
 admin:
     prueba@prueba.com:123456
 
 voluntario:
-    v@v.com:12345
+    v@v.com:123456
 donante:
-    f@f.com:12345
+    f@f.com:123456
 
 beneficiario:
-    b@b.com:12345
+    b@b.com:123456

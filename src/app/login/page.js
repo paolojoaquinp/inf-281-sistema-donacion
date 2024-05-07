@@ -12,7 +12,7 @@ import ModalContext from '@/app/context/modal';
 
 const Login = () => {
     const router = useRouter();
-    const { auth,setAuth } = useContext(AuthContext);
+    const { auth, setAuth } = useContext(AuthContext);
     const { setAlert } = useContext(AlertContext);
     const { setIsOpen } = useContext(ModalContext);
 
