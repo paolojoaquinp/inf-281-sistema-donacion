@@ -22,9 +22,10 @@ admin:
     prueba@prueba.com:123456
 
 voluntario:
-    v@v.com:123456
+    v@v.com:12345
+    hola@estado.com:123456
 donante:
-    f@f.com:123456
+    f@f.com:12345
 
 beneficiario:
     b@b.com:123456

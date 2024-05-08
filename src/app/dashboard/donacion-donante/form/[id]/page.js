@@ -10,7 +10,7 @@ import axios from 'axios';
 import AuthContext from '@/app/context/auth';
 import PrimaryButton from '@/app/components/primary-button';
 
-const DonacionAdminForm = () => {
+const DonacionDonanteForm = () => {
     const { id } = useParams();
     const { setAuth } = useContext(AuthContext);
     const [voluntarios, setVoluntarios] = useState([]);
@@ -21,6 +21,7 @@ const DonacionAdminForm = () => {
         try {
             await axios.get(`http://localhost:3001/api/donaciones/findById/${id}`)
             .then((response) => {
+                console.log("response", response.data);
                 setDonacion(response.data);
             });
         } catch (error) {
@@ -161,4 +162,4 @@ const DonacionAdminForm = () => {
     );
 }
     
-export default DonacionAdminForm;  
+export default DonacionDonanteForm;  

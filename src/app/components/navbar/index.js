@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { NavbarStyled } from './navbar-styled';
 import { MdOutlineNotifications } from "react-icons/md";
 
-const Navbar = ({children}) => {
+const Navbar = () => {
     const { auth, setAuth } = useContext(AuthContext);
     const [isNotification, setIsNotification] = useState(false);
     const [role, setRole] = useState('');
@@ -22,6 +22,7 @@ const Navbar = ({children}) => {
         }
     }, []);
     useEffect(() => {
+        
         if(auth.id) {
             fetchNotifications();
             setRole(localStorage.getItem('rol'));
@@ -29,15 +30,36 @@ const Navbar = ({children}) => {
     }
     , [auth]);
 
-
+    useEffect(() => {
+        setRole(localStorage.getItem('rol'));
+    }, [role]);
     
     const fetchNotifications = async () => {
-        await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
+        const rol = localStorage.getItem('rol');
+        if(rol === 'administrador') {
+            await axios.get(`http://localhost:3001/api/notificacion/getAll`)
+            .then((response) => {
+                if(response.data.length > 0) {
+                    setIsNotification(true);
+                }
+            });
+        }
+        if(rol === "donante") {
+            await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
+            .then((response) => {
+                if(response.data.length > 0) {
+                    setIsNotification(true);
+                }
+            });
+        }
+
+
+/*         await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`)
         .then((response) => {
             if(response.data.length > 0) {
                 setIsNotification(true);
             }
-        });
+        }); */
     };
     
 
@@ -60,7 +82,7 @@ const Navbar = ({children}) => {
                 <p className='role_text'>Rol: {role}</p>
             </Link>
             <div className="container__links">
-                {auth ?
+                {auth.id !== undefined ?
                     <>
                         <button onClick={handleLogout}>Cerrar Sesion</button> 
                         <br />
@@ -76,7 +98,7 @@ const Navbar = ({children}) => {
                              ? 
                             <>
                                 {/* Enlaces para Admin */}
-                                {role === 'administrador' || 0==0 && (
+                                {role === 'administrador' && (
                                     <div className='group__links'>
                                         <h3>Admin Links</h3>
                                         <Link href="/dashboard/eventos">Evento</Link>

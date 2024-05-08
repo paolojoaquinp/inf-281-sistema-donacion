@@ -14,7 +14,7 @@ import PrimaryButton from '@/app/components/primary-button';
 import Card from '@/app/components/card-food';
 import { AlimentosWrapper } from '../donacion-styled';
 import CardMyOrder from '../components/card-my-order';
-
+import { messagesNotification } from '@/app/utils/constants';
 
 const Checkout = () => {
     const router = useRouter();
@@ -64,6 +64,7 @@ const Checkout = () => {
                 sender_id: auth.id,
                 receiver_id: 1,
                 message: 'Nueva donacion',
+                tipo: messagesNotification.NUEVA_DONACION
             });
 
         } catch (error) {

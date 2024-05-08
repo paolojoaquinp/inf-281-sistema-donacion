@@ -3,19 +3,39 @@ import React, { useState, useEffect, useContext, use } from "react";
 import axios from "axios";
 import { NotificacionesWrapper } from './notificaciones-styled';
 import AuthContext from "@/app/context/auth";
-import { messagesNotification } from "@/app/utils/constants";
+import { messagesNotification, Roles } from "@/app/utils/constants";
 import Link from "next/link";
+import PrimaryButton from "@/app/components/primary-button";
+import { useRouter } from "next/navigation";
+
 const Notificaciones = () => {
     const [notifications, setNotifications] = useState([]);
     const { auth , setAuth } = useContext(AuthContext);
     const [rol, setRol] = useState('');
+    const router = useRouter();
 
     const fetchNotifications = async (message) => {
         try {
-            const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findByType/${message}`)
-            if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
-                setNotifications(notifiactionResponse.data);
+            const rol = localStorage.getItem('rol');
+            if(rol === 'administrador') {
+                const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findByType/${message}`);
+                if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
+                    setNotifications(notifiactionResponse.data);
+                }
             }
+            if(rol === Roles.VOLUNTARIO) {
+                const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`);
+                if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
+                    setNotifications(notifiactionResponse.data);
+                }
+            }
+            if(rol === Roles.DONANTE) {
+                const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`);
+                if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
+                    setNotifications(notifiactionResponse.data);
+                }
+            }
+            // leer notificaciones
             for(let notification of notifiactionResponse.data) {
                 if(!notification.read) {
                     await readNotification(notification.id);
@@ -41,9 +61,13 @@ const Notificaciones = () => {
 
     useEffect(() => {
         setRol(localStorage.getItem('rol'));
-        if(rol === 'administrador') {
+        if(rol === Roles.ADMINISTRADOR) {
             fetchNotifications(messagesNotification.NUEVA_DONACION);
             console.log("reading notifications...");
+        } else if(rol == Roles.VOLUNTARIO) {
+            fetchNotifications(messagesNotification.NUEVA_ASIGNACION);
+        } else if(rol == Roles.DONANTE) {
+            fetchNotifications(messagesNotification.NUEVA_ASIGNACION);
         }
     },[rol]);
 
@@ -68,9 +92,19 @@ const Notificaciones = () => {
                                 <p>{el.message}</p>
                                 <p>{el.isread ? 'Leido' : 'No leido'}</p>
                                 <p>
-                                    <Link
-                                        href="/dashboard/donacion-admin"
-                                    >Ir a donaciones</Link>
+                                    {rol === Roles.ADMINISTRADOR 
+                                        ?
+                                            <Link
+                                                href="/dashboard/donacion-admin"
+                                            >Ir a donaciones</Link>
+                                        : (rol=== Roles.VOLUNTARIO)
+                                            ? <Link href="/dashboard/donacion-voluntario">
+                                                  Ir a mis asignaciones
+                                              </Link>
+                                            : <Link href="/dashboard/donacion-donante">
+                                                Ir a mis donaciones
+                                              </Link>
+                                    }
                                 </p>
                             </div>
                         })
