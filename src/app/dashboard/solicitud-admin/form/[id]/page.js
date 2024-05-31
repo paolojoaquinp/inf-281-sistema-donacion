@@ -5,12 +5,33 @@ import { DonantesWrapper } from '../../../donantes/donantes-styles';
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import { useRouter, useParams } from 'next/navigation';
 import { messagesNotification } from '@/app/utils/constants';
+import { AlimentosWrapper } from '@/app/dashboard/beneficiarios/solicitud/donacion-styled';
 
 import axios from 'axios';
 import AuthContext from '@/app/context/auth';
 import PrimaryButton from '@/app/components/primary-button';
+import CartContext from '@/app/context/cart';
+import CardMyOrder from '@/app/components/card-my-order';
+const cart = [
+    {
+        id: 2,
+        image: "/images/products/chamarrahombre.png",
+        quantity: 1,
+        size: "Talla L",
+        title: "Chamarra para hombre",
+        total: 4,
+    },
+    {
+        id:1,
+        image:"/images/products/chamarramujer.png",
+        quantity:1,
+        size:"Talla M",
+        title:"Chamarra para mujer",
+        total:2,
+    }
+]
 
-const DonacionDonanteForm = () => {
+const DonacionAdminForm = () => {
     const { id } = useParams();
     const { setAuth } = useContext(AuthContext);
     const [voluntarios, setVoluntarios] = useState([]);
@@ -19,9 +40,8 @@ const DonacionDonanteForm = () => {
 
     const fetchDonacion = async () => {
         try {
-            await axios.get(`http://localhost:3001/api/donaciones/findById/${id}`)
+            await axios.get(`http://localhost:3001/api/solicitud/findById/${id}`)
             .then((response) => {
-                console.log("response", response.data);
                 setDonacion(response.data);
             });
         } catch (error) {
@@ -59,8 +79,8 @@ const DonacionDonanteForm = () => {
             // for each for selectedVoluntarios
             console.log("selectedVoluntarios", selectedVoluntarios[0]);
             for(let i = 0; i < selectedVoluntarios.length; i++) {
-                await axios.post('http://localhost:3001/api/voluntarioDonacion/create', {
-                    idDonacion: id,
+                await axios.post('http://localhost:3001/api/voluntarioSolicitud/create', {
+                    idSolicitud: id,
                     idVoluntario: selectedVoluntarios[i].iduser,
                     estado: 'pendiente'
                 });
@@ -83,8 +103,8 @@ const DonacionDonanteForm = () => {
             await axios.post('http://localhost:3001/api/notificacion/create', {
                 sender_id: localAuth.id,
                 receiver_id: idVoluntario,
-                message: 'Nueva Asignacion',
-                tipo: messagesNotification.NUEVA_ASIGNACION
+                message: 'Nueva Asignacion Solicitud',
+                tipo: messagesNotification.NUEVA_ASIGNACION_SOLICITUD
             });
 
         } catch (error) {
@@ -113,7 +133,7 @@ const DonacionDonanteForm = () => {
                 onSubmit={onSubmit}
             >
                 <Form>
-                    <h1>Donacion</h1>
+                    <h1>Asignar Voluntarios</h1>
                     <section className='form-section__container donacion__info'>
                         <h6>1. Donacion</h6>
                         <p>Datos de la donación</p>
@@ -137,6 +157,14 @@ const DonacionDonanteForm = () => {
                     <section className='form-section__container'>
                         <h6>2. Voluntarios</h6>
                         <p>Asignar a los voluntarios para la donacion</p>
+                        <CustomInputGroup>
+                        <label htmlFor='productos'>Productos Donacion</label>
+                            <AlimentosWrapper>
+                                {cart.map((elem, index) => (
+                                    <CardMyOrder key={index}  item={elem}/>
+                                ))}
+                            </AlimentosWrapper>
+                        </CustomInputGroup>
                         <CustomInputGroup>
                             <div className='section__checkbox'>
                                 {voluntarios.map((voluntario, index) => (
@@ -162,4 +190,4 @@ const DonacionDonanteForm = () => {
     );
 }
     
-export default DonacionDonanteForm;  
+export default DonacionAdminForm;  

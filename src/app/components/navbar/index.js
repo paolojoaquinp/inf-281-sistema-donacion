@@ -139,7 +139,7 @@ const Navbar = () => {
                                         <Link href="/portal/normas">Normas</Link>
                                         <Link href="/portal/eventos">Eventos</Link>
                                         <Link href="/portal/educacion">Educación</Link>
-                                        <Link href="/dashboard/solicitud">Solicitud</Link>   {/* Solicitudes de beneficiarios */}
+                                        <Link href="/dashboard/beneficiarios/solicitud">Solicitud</Link>  
                                     </div>
                                 )}
                                 {role === '' && (

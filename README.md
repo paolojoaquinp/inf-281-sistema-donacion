@@ -28,4 +28,4 @@ donante:
     f@f.com:12345
 
 beneficiario:
-    b@b.com:123456
+    b@b.com:12345

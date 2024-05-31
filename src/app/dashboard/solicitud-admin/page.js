@@ -14,10 +14,10 @@ const DonacionesAdmin = () => {
 
     const fetchDonaciones = async () => {
         try {
-            const donacionesResponse = await axios.get('http://localhost:3001/api/donaciones/getAll');
+            const donacionesResponse = await axios.get('http://localhost:3001/api/solicitud/getAll');
             if(donacionesResponse.data.length > 0 || donacionesResponse.data !== null) {
                 setDonaciones(donacionesResponse.data);
-                console.log(donaciones);
+                console.log("solicitudes de donaciones: ", donacionesResponse.data);
             }
         } catch (error) {
             console.error(error);
@@ -27,12 +27,11 @@ const DonacionesAdmin = () => {
     const handleDonation = async () => {
         try {
             const donacion = donaciones[indexDonacion];
-            const response = await axios.put(`http://localhost:3001/api/donaciones/update`, {
+            const response = await axios.put(`http://localhost:3001/api/solicitud/update`, {
                 id: donacion.id,
-                idDonante: donacion.iddonante,
+                idBeneficiario: donacion.idbeneficiario,
+                descripcion: donacion.descripcion,
                 estado: 'finalizado',
-                lat: donacion.lat,
-                lng: donacion.lng,
                 fechaRecoger: donacion.fecharecoger
             }).then(() => {
                 setIsOpen(false);
@@ -46,12 +45,11 @@ const DonacionesAdmin = () => {
     const handleDonationCancel = async () => {
         try {
             const donacion = donaciones[indexDonacion];
-            const response = await axios.put(`http://localhost:3001/api/donaciones/update`, {
+            const response = await axios.put(`http://localhost:3001/api/solicitud/update`, {
                 id: donacion.id,
-                idDonante: donacion.iddonante,
+                idBeneficiario: donacion.idbeneficiario,
                 estado: 'inactivo',
-                lat: donacion.lat,
-                lng: donacion.lng,
+                descripcion: donacion.descripcion,
                 fechaRecoger: donacion.fecharecoger
             }).then(() => {
                 setIsOpen(false);
@@ -76,8 +74,12 @@ const DonacionesAdmin = () => {
     return (
         <DonacionAdminWrapper>
             <div className='Head-usuarios__container'>
-                <h1>Donaciones</h1>
-                <p>Donaciones de todos los donadores</p>
+                <h1>
+                    Solicitudes de Donaciones
+                </h1>
+                <p>
+                    Aqui podras ver las solicitudes de donaciones
+                </p>
                 
                 <div className='Head-usuarios-actions__container'>
                     <div className='Head-usuarios-filters'>
@@ -95,7 +97,7 @@ const DonacionesAdmin = () => {
                         <div className='donation__card--head'>
                             <p>Nombre Donador</p>
                             <p>email</p>
-                            <p>Fecha entrega</p>
+                            <p>Fecha recoger</p>
                             <p>Estado</p>
                             <p>Acciones</p>
                         </div>
@@ -103,7 +105,7 @@ const DonacionesAdmin = () => {
                              <div key={index} className='donation__card'>
                                 <p>{donacion.nombre}</p>
                                 <p>{donacion.email}</p>
-                                <p>{donacion.fechaentregar}</p>
+                                <p>{donacion.fecharecoger}</p>
                                 <p>
                                     <Chip label={donacion.estado} />
                                 </p>
@@ -111,7 +113,7 @@ const DonacionesAdmin = () => {
                                 <div className='donation__actions'>
                                     {donacion.estado === 'inicial'
                                         ?
-                                            <Link href={`/dashboard/donacion-admin/form/${encodeURIComponent(donacion.id)}`}>
+                                            <Link href={`/dashboard/solicitud-admin/form/${encodeURIComponent(donacion.id)}`}>
                                                 <p>Asignar Voluntarios</p>
                                             </Link>
                                         :

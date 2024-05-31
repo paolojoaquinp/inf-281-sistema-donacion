@@ -69,30 +69,33 @@ const Donacion = () => {
             state: { cart }
           } = useContext(CartContext);
     return (
-        <DonacionStyles
-            isOpen={isCartOpen}
-        >
-            <div className="contenedor-items">
-                {productItems.map((item, index) => (
-                    <CardItem key={index} item={item} 
-                        onAddToCart={() => {
-                                if(!isCartOpen) {
-                                    setIsCartOpen(true);
-                                }
-                                if(!itemExist(item)) {
-                                    addToCart(item);
+        <>
+            <h1 style={{fontSize: '2.2rem' }}>Donacion</h1>
+            <DonacionStyles
+                isOpen={isCartOpen}
+            >
+                <div className="contenedor-items">
+                    {productItems.map((item, index) => (
+                        <CardItem key={index} item={item} 
+                            onAddToCart={() => {
+                                    if(!isCartOpen) {
+                                        setIsCartOpen(true);
+                                    }
+                                    if(!itemExist(item)) {
+                                        addToCart(item);
+                                    }
                                 }
                             }
-                        }
-                    />
-                ))}
-            </div>
-            <MyOrder 
-                cart={cart}
-                isOpen={isCartOpen}
-                setIsCartOpen={setIsCartOpen}
-            />
-        </DonacionStyles>
+                        />
+                    ))}
+                </div>
+                <MyOrder 
+                    cart={cart}
+                    isOpen={isCartOpen}
+                    setIsCartOpen={setIsCartOpen}
+                />
+            </DonacionStyles>
+        </>
     );
 }
 

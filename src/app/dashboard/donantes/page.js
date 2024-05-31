@@ -30,10 +30,11 @@
 
 
 'use client'
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CustomInputGroup, CustomInput, CustomSelect } from '@/app/components/custom-form-components';
 import { DonantesWrapper } from './donantes-styles';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { FaRegEye, FaEyeSlash } from "react-icons/fa";
 
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -49,6 +50,12 @@ const Donante = () => {
     const { setAlert } = useContext(AlertContext);
     const { setIsOpen } = useContext(ModalContext);
 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
     const initialValues = {
         nombre: '',
         paterno: '',
@@ -61,9 +68,13 @@ const Donante = () => {
         tipoDonante:''
     };
 
-    const validationSchema = Yup.object({
+    const validationSchema = Yup.object().shape({
         email: Yup.string().email('Invalid email format').required('Required'),
-        password: Yup.string().required('Required')
+        password: Yup.string()
+        .required('La contraseña es requerida')
+        .min(8, 'La contraseña debe tener al menos 8 caracteres')
+        .matches(/\d/, 'La contraseña debe contener al menos un número')
+        .matches(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
     });
 
     const onSubmit = async (values) => {
@@ -100,6 +111,21 @@ const Donante = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={onSubmit}
+                validate={
+                    (values) => {
+                        let errors = {};
+                        return validationSchema.validateAt('password', values, { abortEarly: false })
+                          .catch(e => {
+                            e.inner.forEach((error) => {
+                              if (!errors[error.path]) {
+                                errors[error.path] = [];
+                              }
+                              errors[error.path].push(error.message);
+                            });
+                            return errors;
+                          });
+                      }
+                }
                 >
                 <Form>
                     <h1>Nuevo Donante</h1>
@@ -159,8 +185,28 @@ const Donante = () => {
                         <p>Complete los campos con la información indicada</p>
                         <CustomInputGroup>
                             <label htmlFor="password">Password</label>
-                            <Field type="password" name="password" id="password" />
-                            <ErrorMessage name="password" component="span" />
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'left',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Field 
+                                    type={showPassword ? 'text' : 'password'} name="password" id="password" />
+                                <button type="button" onClick={handleShowPassword}>
+                                    {showPassword ? <FaRegEye size={15} /> : <FaEyeSlash size={15}/>}
+                                </button>
+                            </div>
+                            <ErrorMessage name="password">
+                                {msg => (
+                                    <div>
+                                    {msg.map((error, index) => (
+                                        <span style={{display:'block'}} key={index}>* {error}</span>
+                                    ))}
+                                    </div>
+                                )}
+                            </ErrorMessage>
                         </CustomInputGroup>
                     </section>
                     <PrimaryButton color="red" onClick={() => router.back()}>Cancelar</PrimaryButton>

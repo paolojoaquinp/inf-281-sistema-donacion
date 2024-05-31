@@ -19,7 +19,7 @@ const DonacionDonanteForm = () => {
 
     const fetchDonacion = async () => {
         try {
-            await axios.get(`http://localhost:3001/api/donaciones/findById/${id}`)
+            await axios.get(`http://localhost:3001/api/solicitud/findById/${id}`)
             .then((response) => {
                 console.log("response", response.data);
                 setDonacion(response.data);
@@ -59,7 +59,7 @@ const DonacionDonanteForm = () => {
             // for each for selectedVoluntarios
             console.log("selectedVoluntarios", selectedVoluntarios[0]);
             for(let i = 0; i < selectedVoluntarios.length; i++) {
-                await axios.post('http://localhost:3001/api/voluntarioDonacion/create', {
+                await axios.post('http://localhost:3001/api/voluntarioSolicitud/create', {
                     idDonacion: id,
                     idVoluntario: selectedVoluntarios[i].iduser,
                     estado: 'pendiente'
@@ -113,7 +113,7 @@ const DonacionDonanteForm = () => {
                 onSubmit={onSubmit}
             >
                 <Form>
-                    <h1>Donacion</h1>
+                    <h1>Mi solicitud</h1>
                     <section className='form-section__container donacion__info'>
                         <h6>1. Donacion</h6>
                         <p>Datos de la donación</p>

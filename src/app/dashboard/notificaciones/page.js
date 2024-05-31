@@ -20,25 +20,76 @@ const Notificaciones = () => {
             if(rol === 'administrador') {
                 const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findByType/${message}`);
                 if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
-                    setNotifications(notifiactionResponse.data);
+                    
+                    const notifiactionResponse1 = await axios.get(`http://localhost:3001/api/notificacion/findByType/${messagesNotification.NUEVA_SOLICITUD}`);
+                    if(notifiactionResponse1.data.length > 0 || notifiactionResponse1.data !== null) {
+                        setNotifications([
+                            ...notifiactionResponse.data,
+                            ...notifiactionResponse1.data
+                        ]);
+                        // read notification
+                        notifiactionResponse1.data.map(async (el) => {
+                            if(!el.read) {
+                                await readNotification(el.id);
+                            }
+                        });
+                        
+                        notifiactionResponse.data.map(async (el) => {
+                            if(!el.read) {
+                                await readNotification(el.id);
+                            }
+                        });
+                    }
                 }
+                
             }
             if(rol === Roles.VOLUNTARIO) {
                 const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`);
                 if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
-                    setNotifications(notifiactionResponse.data);
+                    /* setNotifications(notifiactionResponse.data); */
+                    const notifiactionResponse1 = await axios.get(`http://localhost:3001/api/notificacion/findByType/${messagesNotification.NUEVA_ASIGNACION_SOLICITUD}`);
+                    if(notifiactionResponse1.data.length > 0 || notifiactionResponse1.data !== null) {
+                        setNotifications([
+                            ...notifiactionResponse.data,
+                            ...notifiactionResponse1.data
+                        ]);
+                        // read notification
+                        notifiactionResponse1.data.map(async (el) => {
+                            if(!el.read) {
+                                await readNotification(el.id);
+                            }
+                        });
+                        notifiactionResponse.data.map(async (el) => {
+                            if(!el.read) {
+                                await readNotification(el.id);
+                            }
+                        });
+                    }
                 }
             }
             if(rol === Roles.DONANTE) {
                 const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`);
                 if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
                     setNotifications(notifiactionResponse.data);
+                    // read notification
+                    notifiactionResponse.data.map(async (el) => {
+                        if(!el.read) {
+                            await readNotification(el.id);
+                        }
+                    });
                 }
             }
-            // leer notificaciones
-            for(let notification of notifiactionResponse.data) {
-                if(!notification.read) {
-                    await readNotification(notification.id);
+
+            if(rol == Roles.BENEFICIARIO) {
+                const notifiactionResponse = await axios.get(`http://localhost:3001/api/notificacion/findById/${auth.id}`);
+                if(notifiactionResponse.data.length > 0 || notifiactionResponse.data !== null) {
+                    setNotifications(notifiactionResponse.data);
+                    // read notification
+                    notifiactionResponse.data.map(async (el) => {
+                        if(!el.read) {
+                            await readNotification(el.id);
+                        }
+                    });
                 }
             }
             
@@ -68,6 +119,8 @@ const Notificaciones = () => {
             fetchNotifications(messagesNotification.NUEVA_ASIGNACION);
         } else if(rol == Roles.DONANTE) {
             fetchNotifications(messagesNotification.NUEVA_ASIGNACION);
+        } else if(rol == Roles.BENEFICIARIO) {
+            fetchNotifications(messagesNotification.RESPUESTA_SOLICITUD_VOLUNTARIO);
         }
     },[rol]);
 
@@ -77,33 +130,63 @@ const Notificaciones = () => {
             <div className="table">
                 <div className="table__head">
                         <p>ID</p>
-                        <p>received_id</p>
-                        <p>sender_id</p>
+                        <p>Autor</p>
+                        {/* <p>sender_id</p> */}
                         <p>Mensaje</p>
                         <p>Leido</p>
                         <p>Acciones</p>
                 </div>
+                {notifications.some(el => el.isread) ? <h1>
+                    No hay notificaciones
+                 </h1>: <></>
+                }
                 <div className="table__body">
                     {notifications.map(el => {
+                        if (el.isread === true) return <></>;
+
                         return <div className="table__row" key={el.id}>
                                 <p>{el.id}</p>
-                                <p>{el.sender_id}</p>
-                                <p>{el.receiver_id}</p>
+                                <p>{el.author_name} {el.author_paterno} {el.author_materno}
+                                </p>
+                                {/* <p>{el.receiver_id}</p> */}
                                 <p>{el.message}</p>
                                 <p>{el.isread ? 'Leido' : 'No leido'}</p>
                                 <p>
                                     {rol === Roles.ADMINISTRADOR 
                                         ?
-                                            <Link
-                                                href="/dashboard/donacion-admin"
-                                            >Ir a donaciones</Link>
+                                           ( (el.message === "Nueva donacion")
+                                            ?    <Link
+                                                    href="/dashboard/donacion-admin"
+                                                >Ir a donaciones</Link>
+                                            :
+                                                 <Link
+                                                     href="/dashboard/solicitud-admin"
+                                                    >Ir a Solicitud</Link>
+                                            )                                    
                                         : (rol=== Roles.VOLUNTARIO)
-                                            ? <Link href="/dashboard/donacion-voluntario">
-                                                  Ir a mis asignaciones
-                                              </Link>
-                                            : <Link href="/dashboard/donacion-donante">
-                                                Ir a mis donaciones
-                                              </Link>
+                                            ? 
+                                              (
+                                                (el.tipo === messagesNotification.NUEVA_ASIGNACION_SOLICITUD)
+                                                ?
+                                                    <Link href="/dashboard/solicitud-voluntario">
+                                                        mis asignaciones solicitudes
+                                                    </Link>
+                                                :
+                                                    <Link href="/dashboard/donacion-voluntario">
+                                                        mis asignaciones donaciones
+                                                    </Link>
+                                              )
+                                            : (rol === Roles.DONANTE)
+                                              ?
+                                                <Link href="/dashboard/donacion-donante">
+                                                    mis donaciones
+                                                </Link>
+                                              : (rol === Roles.BENEFICIARIO)
+                                                ?
+                                                    <Link href="/dashboard/solicitud-beneficiario">
+                                                        mis solicitudes
+                                                    </Link>
+                                                : null
                                     }
                                 </p>
                             </div>

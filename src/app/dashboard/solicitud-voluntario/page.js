@@ -6,18 +6,17 @@ import Link from 'next/link';
 import Modal from '@/app/components/modal';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { messagesNotification, Roles } from '@/app/utils/constants';
+import { messagesNotification } from '@/app/utils/constants';
 
 const DonacionesAdmin = () => {
     const [isOpen, setIsOpen] = useState(false);    
     const [donacionesVoluntario, setDonacionesVoluntario] = useState([]);
     const router = useRouter();
-    const [rol, setRol] = useState('');
 
     const fetchDonaciones = async () => {
         try {
             const auth = JSON.parse(localStorage.getItem('auth'));
-            const donacionesResponse = await axios.get(`http://localhost:3001/api/donaciones/findByUserId/${auth.id}`);
+            const donacionesResponse = await axios.get(`http://localhost:3001/api/voluntarioSolicitud/findById/${auth.id}`);
             if(donacionesResponse.data.length > 0 || donacionesResponse.data !== null) {
                 setDonacionesVoluntario(donacionesResponse.data);
                 console.log(donaciones);
@@ -29,14 +28,48 @@ const DonacionesAdmin = () => {
 
     // useeffect if we come here form an Link using routing
     useEffect(() => {
-        setRol(localStorage.getItem('rol'));
         fetchDonaciones();
         console.log('fetching donaciones...');
 
     }, []);
 
+    const handleAccept = async (id, idDonacion, idDonante) => {
+        try {
+            const auth = JSON.parse(localStorage.getItem('auth'));
+            const response = await axios.put(`http://localhost:3001/api/voluntarioSolicitud/update`, {
+                id:id,
+                idSolicitud: idDonacion,
+                idVoluntario: auth.id,
+                estado: 'aceptado'
+            });
+            
+            const notification = await setNotification(auth.id, idDonante, 'aceptado')
+                .then(() => {
+                    router.push('/dashboard');
+                });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-
+    const handleReject = async (id,idDonacion,idDonante) => {
+        try {
+            const auth = JSON.parse(localStorage.getItem('auth'));
+            const response = await axios.put(`http://localhost:3001/api/voluntarioSolicitud/update`, {
+                id: id,
+                idSolicitud: idDonacion,
+                idVoluntario: auth.id,
+                estado: 'rechazado'
+            });
+            
+            const notificacion = await setNotification(auth.id, idDonante, 'rechazado')
+                .then(() => {
+                    router.push('/dashboard');
+                });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const setNotification = async (idVoluntario, idDonante, estado) => {
         try {
@@ -44,7 +77,7 @@ const DonacionesAdmin = () => {
                 sender_id: idVoluntario,
                 receiver_id: idDonante,
                 message: estado,
-                tipo: messagesNotification.RESPUESTA_SOLICITUD
+                tipo: messagesNotification.RESPUESTA_SOLICITUD_VOLUNTARIO
             });
         } catch (error) {
             console.error(error);
@@ -54,8 +87,8 @@ const DonacionesAdmin = () => {
     return (
         <DonacionAdminWrapper>
             <div className='Head-usuarios__container'>
-                <h1>Mis Donaciones</h1>
-                <p>Listado de mis donaciones.</p>
+                <h1>Mis Asignaciones de Solicitudes</h1>
+                <p>asignaciones de solicitudes.</p>
                 
                 <div className='Head-usuarios-actions__container'>
                     <div className='Head-usuarios-filters'>
@@ -67,32 +100,29 @@ const DonacionesAdmin = () => {
                    <div className='donations__header'></div>
                      <div className='donations__body'>
                         <div className='donation__card--head'>
-                            <p>idDonacion</p>
+                            <p>idSolicitud</p>
+                            <p>Autor</p>
                             <p>Estado</p>
-                            <p>Fecha entrega</p>
+                            <p>Fecha Recoger</p>
                             <p>Acciones</p>
                         </div>
                         {donacionesVoluntario.map((donacion, index) => (
                              <div key={index} className='donation__card'>
-                                <p>{donacion.id}</p>
+                                <p>{donacion.idsolicitud}</p>
+                                <p>{donacion.autor_name+' '+
+                                    donacion.autor_paterno+' '+
+                                    donacion.autor_materno}
+                                </p>
                                 <p>{donacion.estado}</p>
-                                <p>{donacion.fechaentregar}</p>
+                                <p>{donacion.fecharecoger}</p>
         
                                 <div className='donation__actions'>
-                                    {rol ===  Roles.VOLUNTARIO ? <>
-                                        <PrimaryButton onClick={() => handleAccept(donacion.id, donacion.iddonacion, donacion.donante_user_id)}>
-                                            Aceptar
-                                        </PrimaryButton>&nbsp;&nbsp;
-                                        <PrimaryButton onClick={() => handleReject(donacion.id, donacion.iddonacion, donacion.donante_user_id)}>
-                                            Rechazar
-                                        </PrimaryButton>
-                                    </>
-                                    :  rol === Roles.DONANTE   
-                                        ? <Link href={`/dashboard/donacion-donante/form/${encodeURIComponent(donacion.id)}`}>
-                                                <p>Ver Detalle</p>
-                                            </Link>
-                                        : <></>
-                                }
+                                    <PrimaryButton onClick={() => handleAccept(donacion.id, donacion.idsolicitud, donacion.donante_user_id)}>
+                                        Aceptar
+                                    </PrimaryButton>&nbsp;&nbsp;
+                                    <PrimaryButton onClick={() => handleReject(donacion.id, donacion.idsolicitud, donacion.donante_user_id)}>
+                                        Rechazar
+                                    </PrimaryButton>
                                                     
                                 </div>
                             </div>

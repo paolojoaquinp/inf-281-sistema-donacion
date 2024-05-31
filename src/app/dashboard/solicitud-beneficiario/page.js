@@ -7,6 +7,7 @@ import Modal from '@/app/components/modal';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { messagesNotification, Roles } from '@/app/utils/constants';
+import Chip from '@/app/components/chip';
 
 const DonacionesAdmin = () => {
     const [isOpen, setIsOpen] = useState(false);    
@@ -17,7 +18,7 @@ const DonacionesAdmin = () => {
     const fetchDonaciones = async () => {
         try {
             const auth = JSON.parse(localStorage.getItem('auth'));
-            const donacionesResponse = await axios.get(`http://localhost:3001/api/donaciones/findByUserId/${auth.id}`);
+            const donacionesResponse = await axios.get(`http://localhost:3001/api/solicitud/findByUserId/${auth.id}`);
             if(donacionesResponse.data.length > 0 || donacionesResponse.data !== null) {
                 setDonacionesVoluntario(donacionesResponse.data);
                 console.log(donaciones);
@@ -54,8 +55,8 @@ const DonacionesAdmin = () => {
     return (
         <DonacionAdminWrapper>
             <div className='Head-usuarios__container'>
-                <h1>Mis Donaciones</h1>
-                <p>Listado de mis donaciones.</p>
+                <h1>Mis Solicitudes</h1>
+                <p>Listado de mis solicitudes.</p>
                 
                 <div className='Head-usuarios-actions__container'>
                     <div className='Head-usuarios-filters'>
@@ -69,26 +70,28 @@ const DonacionesAdmin = () => {
                         <div className='donation__card--head'>
                             <p>idDonacion</p>
                             <p>Estado</p>
-                            <p>Fecha entrega</p>
+                            <p>Fecha Recoger</p>
                             <p>Acciones</p>
                         </div>
                         {donacionesVoluntario.map((donacion, index) => (
                              <div key={index} className='donation__card'>
                                 <p>{donacion.id}</p>
-                                <p>{donacion.estado}</p>
-                                <p>{donacion.fechaentregar}</p>
+                                <p>
+                                    <Chip label={donacion.estado} />
+                                </p>
+                                <p>{donacion.fecharecoger}</p>
         
                                 <div className='donation__actions'>
                                     {rol ===  Roles.VOLUNTARIO ? <>
-                                        <PrimaryButton onClick={() => handleAccept(donacion.id, donacion.iddonacion, donacion.donante_user_id)}>
+                                        <PrimaryButton onClick={() => handleAccept(donacion.id, donacion.idsolicitud, donacion.donante_user_id)}>
                                             Aceptar
                                         </PrimaryButton>&nbsp;&nbsp;
-                                        <PrimaryButton onClick={() => handleReject(donacion.id, donacion.iddonacion, donacion.donante_user_id)}>
+                                        <PrimaryButton onClick={() => handleReject(donacion.id, donacion.idsolicitud, donacion.donante_user_id)}>
                                             Rechazar
                                         </PrimaryButton>
                                     </>
-                                    :  rol === Roles.DONANTE   
-                                        ? <Link href={`/dashboard/donacion-donante/form/${encodeURIComponent(donacion.id)}`}>
+                                    :  rol === Roles.BENEFICIARIO   
+                                        ? <Link href={`/dashboard/solicitud-beneficiario/form/${encodeURIComponent(donacion.id)}`}>
                                                 <p>Ver Detalle</p>
                                             </Link>
                                         : <></>
